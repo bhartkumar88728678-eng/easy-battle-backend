@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="app-title-tag">Easy Battle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #001959; }
+        .nav-active { color: #facc15 !important; font-weight: 600; }
+        .bg-app-blue { background-color: #001959; }
+        .bg-maroon-card { background-color: #4a0505; }
+        .bg-header-maroon { background-color: #3b0202; }
+        .input-dark-blue { background-color: #00133a; border: 1px solid #00256e; }
+        
+        /* 🌟 PREMIUM STYLISH ALERT GLOW */
+        .glass-popup {
+            background: rgba(74, 5, 5, 0.95);
+            border: 2px solid #facc15;
+            box-shadow: 0 0 30px rgba(250, 204, 21, 0.4);
+        }
+        .success-glow { text-shadow: 0 0 12px rgba(52, 211, 153, 0.7); }
+        .error-glow { text-shadow: 0 0 12px rgba(239, 68, 68, 0.7); }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #4a0505; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-white min-h-screen pb-24 selection:bg-yellow-500 selection:text-black">
+
+    <div id="gaming-alert-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 transition-all duration-200">
+        <div class="glass-popup w-full max-w-xs rounded-3xl p-6 text-center transform scale-95 transition-transform duration-200 space-y-4">
+            <div id="alert-icon-box" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center text-4xl bg-emerald-500/20 border-2 border-emerald-500">
+                ✅
+            </div>
+            <div class="space-y-1">
+                <h3 id="alert-main-title" class="text-xl font-black text-emerald-400 success-glow uppercase tracking-wider">User Logined</h3>
+                <p id="alert-sub-desc" class="text-xs text-gray-300 font-medium">Data synced successfully!</p>
+            </div>
+            <div class="w-full bg-black/40 h-1 rounded-full overflow-hidden">
+                <div id="alert-progress-bar" class="bg-yellow-500 h-full w-0 transition-all duration-2000 ease-out"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-welcome" class="fixed inset-0 bg-app-blue z-50 flex flex-col items-center justify-center p-6">
+        <div id="welcome-logo" class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-2xl mb-4 border-4 border-yellow-500 overflow-hidden">
+            <span class="text-5xl">🎮</span>
+        </div>
+        <h1 id="welcome-app-name" class="text-4xl font-black text-white tracking-wider mb-2">Easy Battle</h1>
+        <p class="text-xs text-gray-400 font-medium tracking-widest uppercase mb-12">Ultimate Esports Arena</p>
+        <button onclick="exitWelcomeScreen()" class="bg-yellow-500 text-black font-extrabold px-10 py-4 rounded-2xl shadow-lg hover:bg-yellow-600 transition tracking-wide text-sm uppercase">Let's Play</button>
+    </div>
+
+    <div id="screen-login" class="hidden flex flex-col items-center justify-center min-h-screen p-6">
+        <div class="w-full max-w-sm bg-maroon-card border border-red-950 rounded-3xl p-6 shadow-2xl text-center space-y-6">
+            <h1 class="text-3xl font-bold text-white tracking-wide">Login</h1>
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-xs text-gray-300 font-medium block mb-1.5">Email</label>
+                    <input type="email" id="login-email" placeholder="name@example.com" class="w-full input-dark-blue rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-300 font-medium block mb-1.5">Password</label>
+                    <input type="password" id="login-password" placeholder="Password" class="w-full input-dark-blue rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                </div>
+            </div>
+            <button onclick="authAction('login')" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 transition uppercase tracking-wider text-sm shadow-lg">Login</button>
+            <div class="space-y-2 pt-2 text-sm text-blue-400 font-medium">
+                <p onclick="toggleAuthScreens('signup')" class="cursor-pointer hover:underline">Need an account? Sign Up</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-signup" class="hidden flex flex-col items-center justify-center min-h-screen p-6">
+        <div class="w-full max-w-sm bg-maroon-card border border-red-950 rounded-3xl p-6 shadow-2xl text-center space-y-4">
+            <h1 class="text-3xl font-bold text-white tracking-wide">Sign Up</h1>
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="text-xs text-gray-300 font-medium block mb-1">Name</label>
+                    <input type="text" id="signup-name" placeholder="Enter your name" class="w-full input-dark-blue rounded-xl p-3 text-sm text-white focus:outline-none focus:border-yellow-500">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-300 font-medium block mb-1">Email</label>
+                    <input type="email" id="signup-email" placeholder="name@example.com" class="w-full input-dark-blue rounded-xl p-3 text-sm text-white focus:outline-none focus:border-yellow-500">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-300 font-medium block mb-1">Password</label>
+                    <input type="password" id="signup-password" placeholder="Password" class="w-full input-dark-blue rounded-xl p-3 text-sm text-white focus:outline-none focus:border-yellow-500">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-300 font-medium block mb-1">Referral Code (Optional)</label>
+                    <input type="text" id="signup-referral" placeholder="Optional" class="w-full input-dark-blue rounded-xl p-3 text-sm text-white focus:outline-none focus:border-yellow-500">
+                </div>
+            </div>
+            <button onclick="authAction('register')" class="w-full bg-yellow-500 text-black font-extrabold py-3.5 rounded-xl hover:bg-yellow-600 transition uppercase tracking-wider text-sm shadow-lg">Sign Up</button>
+            <p onclick="toggleAuthScreens('login')" class="text-sm text-blue-400 font-medium pt-2 cursor-pointer hover:underline">Already have account? Login</p>
+        </div>
+    </div>
+
+    <div id="app-header" class="hidden sticky top-0 z-40 bg-header-maroon p-4 flex justify-between items-center shadow-md border-b border-red-950">
+        <div class="flex items-center space-x-3">
+            <div id="header-logo-box" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center border-2 border-yellow-500 overflow-hidden">👤</div>
+            <div><p id="header-welcome-text" class="text-[11px] text-gray-300 uppercase font-medium">WELCOME<span class="text-yellow-400 ml-1">Guest</span></p></div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <div onclick="navigateTo('screen-wallet')" class="flex items-center bg-[#00133a] px-4 py-1.5 rounded-full border border-gray-700 cursor-pointer">
+                <span id="header-coins" class="text-white text-xs font-bold">₹ 5</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-home" class="hidden p-4 space-y-6">
+        <div class="space-y-2.5">
+            <h3 class="text-sm font-bold tracking-wide text-gray-300">My Matches</h3>
+            <div class="grid grid-cols-3 gap-3">
+                <button class="bg-maroon-card p-3 rounded-2xl text-[10px] uppercase font-bold text-center">▶️ Ongoing</button>
+                <button class="bg-maroon-card p-3 rounded-2xl text-[10px] uppercase font-bold text-center">📅 Upcoming</button>
+                <button class="bg-maroon-card p-3 rounded-2xl text-[10px] uppercase font-bold text-center">🏆 Completed</button>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <h3 class="text-base font-bold tracking-wide text-white">Esport Games</h3>
+            <div id="dynamic-games-grid-container" class="grid grid-cols-3 gap-2.5">
+                </div>
+        </div>
+    </div>
+
+    <div id="screen-matches-viewer" class="hidden p-4 space-y-4">
+        <button onclick="navigateTo('screen-home')" class="bg-maroon-card p-2 rounded-xl text-xs text-yellow-400">❮ Back</button>
+        <h2 id="current-category-title" class="text-lg font-black text-white capitalize">Tournaments</h2>
+        <div id="filtered-matches-container" class="space-y-4"></div>
+    </div>
+
+    <div id="screen-wallet" class="hidden p-4 space-y-6">
+        <h2 class="text-2xl font-bold tracking-tight">Wallet Center</h2>
+        <div class="bg-maroon-card rounded-3xl p-6 border border-red-950 text-center space-y-5">
+            <h3 class="text-xs text-gray-300 uppercase font-medium">Total Balance</h3>
+            <h3 class="text-4xl font-black text-amber-400">₹ <span id="wallet-coins-large">5.00</span></h3>
+            <button onclick="openWalletModal()" class="w-full bg-yellow-500 text-black font-bold p-3.5 rounded-xl text-sm">➕ Add Cash (UPI QR)</button>
+        </div>
+    </div>
+
+    <div id="screen-leaderboard" class="hidden p-4 space-y-4">
+        <h2 class="text-2xl font-black text-yellow-500">🏆 Top Warriors</h2>
+        <div id="leaderboard-container" class="bg-maroon-card rounded-2xl overflow-hidden divide-y divide-red-950"></div>
+    </div>
+
+    <div id="screen-profile" class="hidden p-4 space-y-4">
+        <div class="bg-gradient-to-b from-[#1a0c2e] to-[#0d041a] p-6 rounded-3xl text-center border border-purple-950/40 space-y-4">
+            <div class="w-20 h-20 bg-gradient-to-tr from-amber-500 to-yellow-300 rounded-full flex items-center justify-center mx-auto text-2xl font-black text-black shadow-xl"><span id="profile-initials">G</span></div>
+            <div>
+                <h3 id="profile-name" class="text-xl font-black">Guest Player</h3>
+                <p id="profile-email" class="text-xs text-gray-400 font-mono mt-0.5">guest@easybattle.com</p>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center text-[10px] text-gray-400 uppercase">
+                <div class="bg-black/30 p-2 rounded-xl"><p class="text-sm font-black text-white">0</p>Matches Played</div>
+                <div class="bg-black/30 p-2 rounded-xl"><p class="text-sm font-black text-white">0</p>Matches Won</div>
+                <div class="bg-black/30 p-2 rounded-xl"><p class="text-sm font-black text-yellow-400">₹0</p>Winnings</div>
+            </div>
+        </div>
+        <div class="bg-maroon-card border border-red-950 rounded-3xl overflow-hidden divide-y divide-red-950 text-sm">
+            <div class="p-4 font-bold text-yellow-400 uppercase text-xs tracking-wider">👤 My Account</div>
+            <div class="p-4 flex justify-between"><span>📊 My Stats</span><span>❯</span></div>
+            <div class="p-4 flex justify-between"><span>⏳ Match History</span><span>❯</span></div>
+            <div class="p-4 flex justify-between text-yellow-400" onclick="triggerGamingAlert('Refer & Earn', 'System tracking code processing...', '🎁')"><span>🎁 Refer & Earn</span><span>❯</span></div>
+        </div>
+    </div>
+
+    <div id="wallet-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50">
+        <div class="bg-maroon-card border border-red-950 rounded-3xl p-6 w-full max-w-sm text-center space-y-4">
+            <h3 class="text-lg font-bold">Deposit Balance</h3>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=8091181960@fam&pn=EasyBattle" class="mx-auto rounded-xl border-2 border-yellow-500 p-1 bg-white">
+            <input type="number" id="dep-amount" placeholder="Amount (₹)" class="w-full admin-input p-3 rounded-xl input-dark-blue text-sm">
+            <input type="text" id="dep-utr" placeholder="12-Digit UTR Number" class="w-full admin-input p-3 rounded-xl input-dark-blue text-sm">
+            <button onclick="submitDepositRequest()" class="w-full bg-yellow-500 text-black font-bold py-3 rounded-xl text-xs uppercase">Submit</button>
+            <button onclick="document.getElementById('wallet-modal').classList.add('hidden')" class="text-xs text-gray-400 underline block mx-auto">Cancel</button>
+        </div>
+    </div>
+
+    <div id="room-detail-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50">
+        <div class="bg-maroon-card border border-red-950 rounded-3xl p-6 w-full max-w-sm space-y-4">
+            <h3 id="rd-title" class="text-xl font-bold">---</h3>
+            <img id="rd-banner" src="" class="w-full h-32 object-cover rounded-xl border border-red-950">
+            <div class="grid grid-cols-2 gap-2 text-center text-xs">
+                <div class="bg-black/20 p-2 rounded-xl"><p class="text-gray-400">⏰ TIME</p><p id="rd-time" class="font-bold">--</p></div>
+                <div class="bg-black/20 p-2 rounded-xl"><p class="text-gray-400">🪙 FEE</p><p id="rd-entry" class="font-bold text-orange-400">₹0</p></div>
+            </div>
+            <button id="rd-join-btn" class="w-full bg-yellow-500 text-black font-bold py-3 rounded-xl text-xs uppercase">Join Match</button>
+            <button onclick="document.getElementById('room-detail-modal').classList.add('hidden')" class="text-xs text-gray-400 underline block mx-auto">Close</button>
+        </div>
+    </div>
+
+    <div id="app-nav" class="hidden fixed bottom-0 left-0 right-0 p-3 bg-maroon-card border-t border-red-950 z-40 flex justify-around text-center text-xs text-gray-400">
+        <button onclick="navigateTo('screen-home')" id="nav-home" class="flex-1 flex flex-col items-center nav-active"><span>🏠</span><span class="text-[10px] mt-0.5">Home</span></button>
+        <button onclick="navigateTo('screen-wallet')" id="nav-wallet" class="flex-1 flex flex-col items-center"><span>💼</span><span class="text-[10px] mt-0.5">Wallet</span></button>
+        <button onclick="navigateTo('screen-leaderboard')" id="nav-leaderboard" class="flex-1 flex flex-col items-center"><span>🏆</span><span class="text-[10px] mt-0.5">Ranks</span></button>
+        <button onclick="navigateTo('screen-profile')" id="nav-profile" class="flex-1 flex flex-col items-center"><span>👤</span><span class="text-[10px] mt-0.5">Profile</span></button>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'https://easy-battle-backend.onrender.com';
+        let currentUserName = "Guest"; let currentUserEmail = ""; let currentUserCoins = 5.00;
+        let globalTournaments = {};
+
+        function triggerGamingAlert(title, desc, icon = "✅", isError = false) {
+            const modal = document.getElementById('gaming-alert-modal');
+            const titleEl = document.getElementById('alert-main-title');
+            const descEl = document.getElementById('alert-sub-desc');
+            const iconEl = document.getElementById('alert-icon-box');
+            const progBar = document.getElementById('alert-progress-bar');
+
+            titleEl.innerText = title; descEl.innerText = desc; iconEl.innerText = icon;
+            if(isError) {
+                titleEl.className = "text-xl font-black text-red-500 error-glow uppercase tracking-wider";
+                iconEl.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center text-4xl bg-red-500/20 border-2 border-red-500";
+            } else {
+                titleEl.className = "text-xl font-black text-emerald-400 success-glow uppercase tracking-wider";
+                iconEl.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center text-4xl bg-emerald-500/20 border-2 border-emerald-500";
+            }
+            progBar.style.width = '0%'; modal.classList.remove('hidden');
+            setTimeout(() => { modal.querySelector('.glass-popup').classList.replace('scale-95','scale-100'); progBar.style.width = '100%'; }, 50);
+            setTimeout(() => { modal.querySelector('.glass-popup').classList.replace('scale-100','scale-95'); setTimeout(() => { modal.classList.add('hidden'); }, 150); }, 2100);
+        }
+
+        function toggleAuthScreens(type) {
+            document.getElementById('screen-login').classList.add('hidden');
+            document.getElementById('screen-signup').classList.add('hidden');
+            document.getElementById(type === 'login' ? 'screen-login' : 'screen-signup').classList.remove('hidden');
+        }
+
+        function exitWelcomeScreen() { document.getElementById('screen-welcome').classList.add('hidden'); toggleAuthScreens('login'); }
+
+        function navigateTo(screenId) {
+            document.querySelectorAll('#screen-login, #screen-signup, #screen-home, #screen-wallet, #screen-leaderboard, #screen-profile, #screen-matches-viewer').forEach(s => s.classList.add('hidden'));
+            if(screenId === 'screen-login' || screenId === 'screen-signup') {
+                document.getElementById('app-header').classList.add('hidden'); document.getElementById('app-nav').classList.add('hidden');
+            } else {
+                document.getElementById('app-header').classList.remove('hidden'); document.getElementById('app-nav').classList.remove('hidden');
+            }
+            document.getElementById(screenId).classList.remove('hidden');
+            document.querySelectorAll('#app-nav button').forEach(b => b.classList.remove('nav-active'));
+            const tab = screenId.split('-')[1]; if(document.getElementById(`nav-${tab}`)) document.getElementById(`nav-${tab}`).classList.add('nav-active');
+
+            if(screenId === 'screen-home') { fetchAllGamesAndBranding(); fetchAllTournamentsData(); }
+            if(screenId === 'screen-wallet') { document.getElementById('wallet-coins-large').innerText = currentUserCoins.toFixed(2); }
+        }
+
+        async function fetchAllGamesAndBranding() {
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/get-games`);
+                const games = await res.json();
+                const container = document.getElementById('dynamic-games-grid-container');
+                container.innerHTML = "";
+                
+                Object.values(games).forEach(game => {
+                    container.innerHTML += `
+                        <div onclick="filterGamesByCategory('${game.name}')" class="bg-maroon-card rounded-2xl overflow-hidden border border-red-950 cursor-pointer text-center h-40 flex flex-col">
+                            <div class="w-full h-24 bg-gray-950"><img src="${game.image}" class="w-full h-full object-cover"></div>
+                            <div class="flex-1 flex items-center justify-center p-1"><p class="text-[11px] font-bold text-gray-200 capitalize">${game.name}</p></div>
+                        </div>`;
+                });
+            } catch(e){}
+        }
+
+        async function authAction(action) {
+            if (action === 'register') {
+                const name = document.getElementById('signup-name').value.trim();
+                const email = document.getElementById('signup-email').value.trim();
+                const password = document.getElementById('signup-password').value.trim();
+                if (!name || !email || !password) return triggerGamingAlert("Error", "Fill required items!", "⚠️", true);
+                
+                const res = await fetch(`${BACKEND_URL}/api/user-auth`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ name, email, password, action }) });
+                if(res.ok) { triggerGamingAlert("User Registered", "Account created successfully! 🔥", "👤", false); setTimeout(()=>toggleAuthScreens('login'), 2000); }
+            } else {
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-password').value.trim();
+                const res = await fetch(`${BACKEND_URL}/api/user-auth`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password, action }) });
+                const data = await res.json();
+                if(data.success) {
+                    currentUserName = data.user.name; currentUserEmail = data.user.email; currentUserCoins = data.user.coins;
+                    document.getElementById('header-welcome-text').innerHTML = `WELCOME<span class="text-yellow-400 ml-1">${currentUserName}</span>`;
+                    document.getElementById('profile-name').innerText = currentUserName;
+                    document.getElementById('profile-email').innerText = currentUserEmail;
+                    document.getElementById('profile-initials').innerText = currentUserName.substring(0,1).toUpperCase();
+                    triggerGamingAlert("User Logined", `Welcome back Warrior, ${currentUserName}!`, "🎮", false);
+                    setTimeout(() => navigateTo('screen-home'), 2200);
+                } else { triggerGamingAlert("Auth Failed", "Invalid Credentials", "❌", true); }
+            }
+        }
+
+        async function fetchAllTournamentsData() { const res = await fetch(`${BACKEND_URL}/api/get-tournaments`); globalTournaments = await res.json(); }
+
+        function filterGamesByCategory(cat) {
+            const container = document.getElementById('filtered-matches-container'); container.innerHTML = "";
+            document.getElementById('current-category-title').innerText = cat;
+            let list = Object.values(globalTournaments).filter(m => m.mode.toLowerCase().trim() === cat.toLowerCase().trim());
+            if(list.length === 0) container.innerHTML = "<p class='text-center text-xs text-gray-500 py-6'>No Matches available right now.</p>";
+            else {
+                list.forEach(m => {
+                    container.innerHTML += `
+                        <div class="bg-maroon-card border border-red-950 rounded-2xl overflow-hidden p-4 space-y-3">
+                            <img src="${m.image}" class="w-full h-32 object-cover rounded-xl">
+                            <h4 class="font-bold">${m.title}</h4>
+                            <div class="flex justify-between text-xs text-gray-300"><span>⏰ ${m.time}</span><span class="text-orange-400 font-bold">Fee: ₹${m.entry_fee}</span></div>
+                            <button onclick="openRoomModal('${m.id}')" class="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl text-xs uppercase">Check Details</button>
+                        </div>`;
+                });
+            }
+            navigateTo('screen-matches-viewer');
+        }
+
+        function openRoomModal(id) {
+            const m = globalTournaments[id]; if(!m) return;
+            document.getElementById('rd-title').innerText = m.title;
+            document.getElementById('rd-time').innerText = m.time;
+            document.getElementById('rd-entry').innerText = '₹' + m.entry_fee;
+            document.getElementById('rd-banner').src = m.image;
+            document.getElementById('rd-join-btn').onclick = async () => {
+                const res = await fetch(`${BACKEND_URL}/api/join-tournament`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email: currentUserEmail, match_id: id }) });
+                if(res.ok) { triggerGamingAlert("Slot Confirmed", "Successfully Registered!", "🏆"); document.getElementById('room-detail-modal').classList.add('hidden'); currentUserCoins -= m.entry_fee; }
+                else { triggerGamingAlert("Failed", "Check Wallet Balance!", "❌", true); }
+            };
+            document.getElementById('room-detail-modal').classList.remove('hidden');
+        }
+        function openWalletModal() { document.getElementById('wallet-modal').classList.remove('hidden'); }
+        function submitDepositRequest() { triggerGamingAlert("Submitted", "Admin approval processing!", "📥"); document.getElementById('wallet-modal').classList.add('hidden'); }
+    </script>
+</body>
+</html>

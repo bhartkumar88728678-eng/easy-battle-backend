@@ -146,3 +146,8 @@ app.get('/api/get-leaderboard', (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Gaming Backend running on http://127.0.0.1:${PORT}`));
+app.use(express.static(__dirname));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
